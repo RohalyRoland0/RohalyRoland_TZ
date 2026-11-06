@@ -6,7 +6,7 @@ const port = 3000;
 app.use(express.json());
  
 app.listen(port, () => {
-    console.log(`A szerver fut.`);
+    console.log(`A szerver ${port}-as porton fut.`);
 })
  
 const connection = mysql.createConnection({
@@ -48,8 +48,10 @@ app.get('/api/konyvek/elerheto', (req, res) => {
     );
 });
 app.get('/api/konyvek/kereses/:szoveg', (req, res) => {
+    const szoveg = req.params.szoveg;
     connection.query(
-        'SELECT * FROM konyvek WHERE cim LIKE ""',
+        'SELECT * FROM konyvek WHERE cim LIKE ?',
+        [`%${szoveg}%`],
         (err, results) => {
             if (err) {
                 return res.status(500).json(err);
@@ -67,6 +69,23 @@ app.get('/api/konyvek/hosszuak', (req, res) => {
                 return res.status(500).json(err);
             }
             res.json(results);
+        }
+    );
+});
+
+app.post('/api/konyvek', (req, res) => {
+    const { mufaj_id, cim, kiadasi_ev, oldalszam, kolcsonozheto } = req.body;
+    connection.query(
+        `INSERT INTO konyvek (mufaj_id, cim, kiadasi_ev, oldalszam, kolcsonozheto) VALUES (?, ?, ?, ?, ?)`,
+        [mufaj_id, cim, kiadasi_ev, oldalszam, kolcsonozheto],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            res.json({
+                message: "Könyv sikeresen hozzáadva",
+                id: result.insertId
+            });
         }
     );
 });
