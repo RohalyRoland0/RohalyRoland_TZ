@@ -84,7 +84,6 @@ app.post('/api/konyvek', (req, res) => {
             }
             res.json({
                 message: "Könyv sikeresen hozzáadva",
-                id: result.insertId
             });
         }
     );
@@ -101,7 +100,6 @@ app.post('/api/mufajok', (req, res) => {
             }
             res.json({
                 message: "Műfaj sikeresen hozzáadva",
-                id: result.insertId
             });
         }
     );
