@@ -89,3 +89,82 @@ app.post('/api/konyvek', (req, res) => {
         }
     );
 });
+
+app.post('/api/mufajok', (req, res) => {
+    const { id, nev } = req.body;
+    connection.query(
+        `INSERT INTO mufajok (id, nev) VALUES (?, ?)`,
+        [id, nev],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            res.json({
+                message: "Műfaj sikeresen hozzáadva",
+                id: result.insertId
+            });
+        }
+    );
+});
+
+app.patch('/api/konyvek/cim/:id', (req, res) => {
+    const { cim } = req.body;
+    connection.query(
+        'UPDATE konyvek SET cim = ? WHERE id = ?',
+        [cim, req.params.id],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            res.json({
+                message: "Cím módosítva"
+            });
+        }
+    );
+});
+
+app.patch('/api/konyvek/kolcsonozheto/:id', (req, res) => {
+    const { kolcsonozheto } = req.body;
+    connection.query(
+        'UPDATE konyvek SET kolcsonozheto = ? WHERE id = ?',
+        [kolcsonozheto, req.params.id],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            res.json({
+                message: "Kölcsönözés módosítva"
+            });
+        }
+    );
+});
+
+app.delete('/api/konyvek/:id', (req, res) => {
+    connection.query(
+        'DELETE FROM konyvek WHERE id = ?',
+        [req.params.id],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            res.json({
+                message: "Könyv törölve",
+            });
+        }
+    );
+});
+
+app.delete('/api/mufajok/:id', (req, res) => {
+    connection.query(
+        'DELETE FROM mufajok WHERE id = ?',
+        [req.params.id],
+        (err, result) => {
+            if (err) {
+                return res.status(500).json(err);
+            }
+            res.json({
+                message: "Műfaj törölve",
+            });
+        }
+    );
+});
